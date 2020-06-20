@@ -2,7 +2,7 @@
   "profiles": {
     "Start (Tool)": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Projects\\Zeus\\src\\Zeus\\Zeus.csproj --debug --no-restore --output ./artifacts --output-graph ./dep.graph.json -p:Version=1.2.0"
+      "commandLineArgs": "C:\\Projects\\Zeus\\src\\Zeus\\Zeus.csproj --verbosity n --no-restore --output ./artifacts --output-graph ./dep.graph.json -p:Version=1.2.0"
     }
   }
 }

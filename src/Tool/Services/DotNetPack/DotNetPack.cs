@@ -54,7 +54,7 @@ namespace PackProject.Tool.Services.DotNetPack
 
                 if (propertyValue == null)
                 {
-                    _logger.LogDebug("Skipping {Property} with alias {Alias} because it's value is null",
+                    _logger.LogInformation("Skipping {Property} with alias {Alias} because it's value is null",
                         property.Property.Name, property.Option.Alias);
 
                     continue;
@@ -66,12 +66,12 @@ namespace PackProject.Tool.Services.DotNetPack
                     {
                         arguments.Add(property.Option.Alias);
 
-                        _logger.LogDebug("Added flag {Property} with alias {Alias}",
+                        _logger.LogInformation("Added flag {Property} with alias {Alias}",
                             property.Property.Name, property.Option.Alias);
                     }
                     else
                     {
-                        _logger.LogDebug("Skipping {Property} with alias {Alias} because it's value is false",
+                        _logger.LogInformation("Skipping {Property} with alias {Alias} because it's value is false",
                             property.Property.Name, property.Option.Alias);
                     }
                 }
@@ -83,7 +83,7 @@ namespace PackProject.Tool.Services.DotNetPack
                     arguments.Add(property.Option.Alias);
                     arguments.Add(strValue);
 
-                    _logger.LogDebug("Added property {Property} with alias {Alias} and value {Value}",
+                    _logger.LogInformation("Added property {Property} with alias {Alias} and value {Value}",
                         property.Property.Name, property.Option.Alias, strValue);
                 }
             }
@@ -93,7 +93,7 @@ namespace PackProject.Tool.Services.DotNetPack
                 foreach (var parameter in options.Parameters)
                 {
                     arguments.Add(parameter);
-                    _logger.LogDebug("Added {Parameter}", parameter);
+                    _logger.LogInformation("Added {Parameter}", parameter);
                 }
             }
 

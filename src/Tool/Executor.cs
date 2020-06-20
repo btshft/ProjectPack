@@ -44,7 +44,6 @@ namespace PackProject.Tool
             bool serviceable = false,
             string verbosity = null,
             string versionSuffix = null,
-            bool debug = false,
             bool parallel = false,
             string outputGraph = null)
         {
@@ -76,7 +75,6 @@ namespace PackProject.Tool
                     VersionSuffix = versionSuffix,
 
                     // dotnet pack-project
-                    IsDebug = debug,
                     Parallel = parallel,
                     OutputGraph = outputGraph
                 };

@@ -4,19 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PackProject.Tool.Exceptions;
-using PackProject.Tool.Services.ExecutionContext;
 
 namespace PackProject.Tool.Services.Runner
 {
     public class CommandRunner : ICommandRunner
     {
         private readonly ILogger<CommandRunner> _logger;
-        private readonly IExecutionContextAccessor _contextAccessor;
 
-        public CommandRunner(ILogger<CommandRunner> logger, IExecutionContextAccessor contextAccessor)
+        public CommandRunner(ILogger<CommandRunner> logger)
         {
             _logger = logger;
-            _contextAccessor = contextAccessor;
         }
 
         /// <inheritdoc />
@@ -48,9 +45,7 @@ namespace PackProject.Tool.Services.Runner
                 }
             };
 
-            var options = _contextAccessor.Context.Options;
-            if (options.IsDebug)
-                _logger.LogDebug($"Preparing to run: {fileName} {command} {args}");
+            _logger.LogInformation($"Preparing to run: {fileName} {command} {args}");
 
             await RunAsync(process);
             if (process.ExitCode != 0)

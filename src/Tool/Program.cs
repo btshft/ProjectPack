@@ -34,10 +34,32 @@ namespace PackProject.Tool
 
             serviceCollection.AddSingleton(sp =>
             {
+                var extractor = sp.GetRequiredService<ICommandArgsExtractor>();
+
                 return LoggerFactory.Create(cfg =>
                 {
+                    var verbosity = extractor.GetVerbosity();
+                    if (verbosity != null)
+                    {
+                        var logLevel = verbosity.ToLowerInvariant() switch
+                        {
+                            "q" => LogLevel.Error,
+                            "quiet" => LogLevel.Error,
+                            "m" => LogLevel.Warning,
+                            "minimal" => LogLevel.Warning,
+                            "n" => LogLevel.Information,
+                            "normal" => LogLevel.Information,
+                            "d" => LogLevel.Debug,
+                            "detailed" => LogLevel.Debug,
+                            "diag" => LogLevel.Debug,
+                            "diagnostic" => LogLevel.Debug,
+                            _ => LogLevel.Error
+                        };
+
+                        cfg.SetMinimumLevel(logLevel);
+                    }
+
                     cfg.AddConsole();
-                    cfg.SetMinimumLevel(LogLevel.Debug);
                 });
             });
 

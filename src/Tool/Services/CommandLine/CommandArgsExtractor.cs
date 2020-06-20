@@ -13,7 +13,7 @@ namespace PackProject.Tool.Services.CommandLine
         /// /p:Param=235
         /// </summary>
         private static readonly Regex ParameterRegex = new Regex(
-            @"^[\/-]p:(?:.)+$", RegexOptions.Compiled | RegexOptions.IgnoreCase,
+            @"^[\/-]p:(?:.)+$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
             TimeSpan.FromSeconds(15));
 
         /// <summary>
@@ -22,7 +22,17 @@ namespace PackProject.Tool.Services.CommandLine
         /// -f value
         /// </summary>
         private static readonly Regex OptionRegex = new Regex(
-            @"^-(?:[-])*.*$", RegexOptions.Compiled | RegexOptions.IgnoreCase,
+            @"^-(?:[-])*.*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+            TimeSpan.FromSeconds(15));
+
+        private static readonly Regex VerbosityOptionRegex = new Regex(
+            @"^(?:-v)|(?:--verbosity)$",
+            RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
+            TimeSpan.FromSeconds(15));
+
+        private static readonly Regex VerbosityLevelRegex = new Regex(
+            @"^(?:(?:q|quiet)|(?:m|minimal)|(?:n|normal)|(?:d|detailed))$",
+            RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase,
             TimeSpan.FromSeconds(15));
 
         private static readonly string[] Commands = new[]
@@ -106,6 +116,23 @@ namespace PackProject.Tool.Services.CommandLine
         public string[] GetAll()
         {
             return _args.ToArray();
+        }
+
+        /// <inheritdoc />
+        public string GetVerbosity()
+        {
+            for (var i = 0; i < _args.Length; i++)
+            {
+                var token = _args[i];
+                var nextToken = (i + 1) < _args.Length
+                    ? _args[i + 1]
+                    : null;
+
+                if (VerbosityOptionRegex.IsMatch(token) && nextToken != null && VerbosityLevelRegex.IsMatch(nextToken))
+                    return nextToken;
+            }
+
+            return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

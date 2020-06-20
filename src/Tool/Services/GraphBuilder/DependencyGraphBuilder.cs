@@ -47,10 +47,6 @@ namespace PackProject.Tool.Services.GraphBuilder
                 };
 
                 await _commandRunner.RunAsync("dotnet", "msbuild", arguments.Extend(options.Parameters));
-
-                if (options.IsDebug)
-                    _logger.LogDebug($"Graph file: {graphFile}");
-
                 return graphFile;
             }
 
@@ -65,8 +61,7 @@ namespace PackProject.Tool.Services.GraphBuilder
                     WriteIndented = true
                 });
 
-                if (options.IsDebug)
-                    _logger.LogDebug($"Graph:{Environment.NewLine} {model}");
+                _logger.LogDebug($"Graph:{Environment.NewLine} {model}");
 
                 return model;
             }

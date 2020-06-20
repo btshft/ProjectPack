@@ -5,5 +5,6 @@
         string GetProjectPath();
         string[] GetParameters();
         string[] GetAll();
+        string GetVerbosity();
     }
 }

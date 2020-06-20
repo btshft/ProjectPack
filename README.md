@@ -24,7 +24,7 @@ dotnet pack-project <project-dir> <args>
 
 ## Examples
 
-Following example will pack project 'MyProject' and all of dependencies to folder './arficacts' with version '1.1.0'.
+Following example will pack project 'MyProject' and all of dependencies to folder './artifacts' with version '1.1.0'.
 ```
 dotnet pack-project ./src/MyProject --output ./artifacts -p:Version=1.1.0
 ```
@@ -45,4 +45,4 @@ There are some ways to solve 'inconvenience' like [setting PrivateAssets="all"](
 Therefore, this tool was created trying to cope with project-to-project dependencies in NuGet packages and make working with them not so terrible.
 
 # How it works
-Tool inspired by article [Analyzing .NET Core project dependencies](https://www.jerriepelser.com/blog/analyze-dotnet-project-dependencies-part-1/). Is uses the same mechanism to analyze dependencies and build a graph, through a MSBuild `GenerateRestoreGraphFile` targer after which the tool analyzes dependencies and for each of them translates the call to dotnet pack.
+Tool inspired by article [Analyzing .NET Core project dependencies](https://www.jerriepelser.com/blog/analyze-dotnet-project-dependencies-part-1/). It uses the same mechanism to analyze dependencies and build a graph, through a MSBuild `GenerateRestoreGraphFile` targer after which the tool analyzes dependencies and for each of them translates the call to dotnet pack.

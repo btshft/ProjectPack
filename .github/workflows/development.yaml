@@ -29,7 +29,7 @@ jobs:
       working-directory: src
       
     - name: Pack
-      run: dotnet pack PackProject.Tool.csproj --configuration --no-build --no-restore --output ./artifacts -p:PackageVersion=$version-ci-$GITHUB_RUN_NUMBER
+      run: dotnet pack PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=$version-ci-$GITHUB_RUN_NUMBER
       working-directory: src/Tool
       
     - name: Push

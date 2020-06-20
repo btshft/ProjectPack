@@ -60,7 +60,7 @@ namespace PackProject.Tool.Services.CommandLine
 
             builder.AddOption<string>(
                 "Sets the verbosity level of the command. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic].",
-                "--verbosity");
+                "--verbosity", "-v");
 
             return builder;
         }

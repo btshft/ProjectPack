@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags: 
+      - v*.*.*
+
+jobs:
+  build:
+    env:
+      version: 1.0.0-ci
+    runs-on: ubuntu-latest
+    steps:
+    - name: Extract version
+      id: tag
+      uses: actions/github-script@0.2.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          return context.payload.ref.replace(/\/refs\/tags\/v/, '');
+            
+    - uses: actions/checkout@v2
+      name: Checkout
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: src
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.tag.outputs.result }}
+      working-directory: src
+      
+    - name: Pack
+      run: dotnet pack  PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=${{ steps.tag.outputs.result }}
+      working-directory: src/Tool
+      
+    - name: Push
+      working-directory: src/Tool/artifacts
+      run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_APIKEY }}

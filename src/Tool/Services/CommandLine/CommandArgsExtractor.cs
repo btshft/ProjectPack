@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace PackProject.Tool.Services.CommandLine
 {
-    public class CommandLineArgsFilter : ICommandLineArgsFilter
+    public class CommandArgsExtractor : ICommandArgsExtractor
     {
         /// <summary>
         /// -p:Param=1234
@@ -30,16 +31,9 @@ namespace PackProject.Tool.Services.CommandLine
             "dotnet-pack-project",  // run as dotnet tool run dotnet-pack-project (projectPath) ..
         };
 
-        private static readonly string[] Introduced = new []
-        {
-            "--debug",
-            "--parallel",
-            "--project", 
-        };
-
         private readonly string[] _args;
 
-        public CommandLineArgsFilter(string[] args)
+        public CommandArgsExtractor(string[] args)
         {
             _args = args;
         }
@@ -64,7 +58,9 @@ namespace PackProject.Tool.Services.CommandLine
                 // dotnet tool run dotnet-pack-project
                 //                 ^^^^^^^^^^^^^^^^^^^ (idx: 2)
 
-                if (index < _args.Length + 1)
+                // Check if we still can move next so command
+                // has at least 1 argument after name
+                if ((index + 1) < _args.Length)
                 {
                     var nextToken = _args[index + 1];
 
@@ -101,55 +97,21 @@ namespace PackProject.Tool.Services.CommandLine
         }
 
         /// <inheritdoc />
+        public string[] GetParameters()
+        {
+            return _args.Where(arg => ParameterRegex.IsMatch(arg)).ToArray();
+        }
+
+        /// <inheritdoc />
         public string[] GetAll()
         {
             return _args.ToArray();
         }
 
-        /// <inheritdoc />
-        public string[] GetBypass()
-        {
-            static bool IsOriginal(string arg)
-            {
-                return !Introduced.Any(i => string
-                    .Equals(i, arg, StringComparison.InvariantCultureIgnoreCase));
-            }
-
-            if (_args.Length < 1)
-                return _args.ToArray();
-
-            var filteredArgs = _args.Where(IsOriginal).ToList();
-            foreach (var command in Commands)
-            {
-                if (filteredArgs.Contains(command))
-                    filteredArgs.Remove(command);
-            }
-
-            // Trim dll name when debugging
-            // dotnet run PackProject.Tool.dll (...)
-            var libPosition = GetLibraryPosition(filteredArgs);
-            if (libPosition.HasValue)
-                filteredArgs.RemoveAt(libPosition.Value);
-
-            return filteredArgs.ToArray();
-        }
-
-        /// <inheritdoc />
-        public string[] GetParameters()
-        {
-            var result = new List<string>();
-            foreach (var arg in _args)
-            {
-                if (ParameterRegex.IsMatch(arg))
-                    result.Add(arg);
-            }
-
-            return result.ToArray();
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int? GetLibraryPosition(IReadOnlyList<string> args)
         {
-            for(var i = 0; i < args.Count; i++)
+            for (var i = 0; i < args.Count; i++)
             {
                 var isDll = args[i].EndsWith("PackProject.Tool.dll", StringComparison.InvariantCultureIgnoreCase);
                 if (isDll)

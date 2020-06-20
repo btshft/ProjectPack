@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace PackProject.Tool.Services.Runner
+namespace PackProject.Tool.Exceptions
 {
     [Serializable]
-    public class CommandRunnerException : Exception
+    public class NonZeroExitCodeException : Exception
     {
         public int ExitCode { get; private set; }
 
-        public CommandRunnerException(string message, int exitCode)
+        public NonZeroExitCodeException(string message, int exitCode)
             : base($"Runner failed with code '{exitCode}': {message}")
         {
             ExitCode = exitCode;
         }
 
         /// <inheritdoc />
-        protected CommandRunnerException(SerializationInfo info, StreamingContext context) 
+        protected NonZeroExitCodeException(SerializationInfo info, StreamingContext context) 
             : base(info, context)
         {
         }

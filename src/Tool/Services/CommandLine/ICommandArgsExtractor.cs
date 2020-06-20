@@ -1,13 +1,9 @@
 ﻿namespace PackProject.Tool.Services.CommandLine
 {
-    public interface ICommandLineArgsFilter
+    public interface ICommandArgsExtractor
     {
         string GetProjectPath();
-
-        string[] GetAll();
-
-        string[] GetBypass();
-
         string[] GetParameters();
+        string[] GetAll();
     }
 }

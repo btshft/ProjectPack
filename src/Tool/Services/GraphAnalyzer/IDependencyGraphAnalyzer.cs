@@ -1,6 +1,6 @@
 ﻿using PackProject.Tool.Models;
 
-namespace PackProject.Tool.Services.GraphAnalizer
+namespace PackProject.Tool.Services.GraphAnalyzer
 {
     public interface IDependencyGraphAnalyzer
     {

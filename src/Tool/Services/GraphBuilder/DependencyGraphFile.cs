@@ -5,22 +5,25 @@ namespace PackProject.Tool.Services.GraphBuilder
 {
     public class DependencyGraphFile : IDisposable
     {
-        public DependencyGraphFile(string name)
+        public DependencyGraphFile(string name, bool autoDelete)
         {
-            Path = name ?? throw new ArgumentNullException(nameof(name));
+            FilePath = name ?? throw new ArgumentNullException(nameof(name));
+            AutoDelete = autoDelete;
         }
 
-        public string Path { get; }
+        public string FilePath { get; }
+
+        public bool AutoDelete { get; }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            if (!File.Exists(Path)) 
+            if (!AutoDelete || !File.Exists(FilePath)) 
                 return;
 
             try
             {
-                File.Delete(Path);
+                File.Delete(FilePath);
             }
             catch
             {
@@ -30,8 +33,20 @@ namespace PackProject.Tool.Services.GraphBuilder
 
         public static DependencyGraphFile Create()
         {
-            var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetTempFileName());
-            return new DependencyGraphFile(path);
+            var path = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+            return new DependencyGraphFile(path, autoDelete: true);
+        }
+
+        public static DependencyGraphFile Create(string path, bool autoDelete = true)
+        {
+            if (path == null) 
+                throw new ArgumentNullException(nameof(path));
+
+            var fullPath = Path.GetFullPath(path);
+            if (!File.Exists(fullPath))
+                File.Create(fullPath).Dispose();
+
+            return new DependencyGraphFile(fullPath, autoDelete);
         }
     }
 }

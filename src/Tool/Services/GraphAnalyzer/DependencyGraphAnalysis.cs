@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PackProject.Tool.Services.GraphAnalizer
+namespace PackProject.Tool.Services.GraphAnalyzer
 {
     public class DependencyGraphAnalysis
     {

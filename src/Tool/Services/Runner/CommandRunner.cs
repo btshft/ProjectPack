@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using PackProject.Tool.Exceptions;
 using PackProject.Tool.Services.ExecutionContext;
 
 namespace PackProject.Tool.Services.Runner
@@ -47,13 +48,13 @@ namespace PackProject.Tool.Services.Runner
                 }
             };
 
-            var context = _contextAccessor.Context;
-            if (context.IsDebugMode)
-                _logger.LogDebug($"Preparing to run '{fileName}' with command '{command}' and args '{args}'");
+            var options = _contextAccessor.Context.Options;
+            if (options.IsDebug)
+                _logger.LogDebug($"Preparing to run: {fileName} {command} {args}");
 
             await RunAsync(process);
             if (process.ExitCode != 0)
-                throw new CommandRunnerException($"{command} {args}", process.ExitCode);
+                throw new NonZeroExitCodeException($"{command} {args}", process.ExitCode);
         }
     }
 }

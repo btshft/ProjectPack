@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using PackProject.Tool.Extensions;
 using PackProject.Tool.Helpers;
 using PackProject.Tool.Models;
-using PackProject.Tool.Services.CommandLine;
 using PackProject.Tool.Services.ExecutionContext;
 using PackProject.Tool.Services.Runner;
 
@@ -17,40 +16,39 @@ namespace PackProject.Tool.Services.GraphBuilder
         private readonly ILogger<DependencyGraphBuilder> _logger;
         private readonly IExecutionContextAccessor _contextAccessor;
         private readonly ICommandRunner _commandRunner;
-        private readonly ICommandLineArgsFilter _commandLineArgsFilter;
 
         public DependencyGraphBuilder(
             ILogger<DependencyGraphBuilder> logger, 
             IExecutionContextAccessor contextAccessor, 
-            ICommandRunner commandRunner, 
-            ICommandLineArgsFilter commandLineArgsFilter)
+            ICommandRunner commandRunner)
         {
             _logger = logger;
             _contextAccessor = contextAccessor;
             _commandRunner = commandRunner;
-            _commandLineArgsFilter = commandLineArgsFilter;
         }
 
         /// <inheritdoc />
         public async Task<DependencyGraph> BuildAsync()
         {
-            var context = _contextAccessor.Context;
+            var options = _contextAccessor.Context.Options;
 
             async Task<DependencyGraphFile> GenerateAsync()
             {
-                var graphFile = DependencyGraphFile.Create();
+                var graphFile = string.IsNullOrEmpty(options.OutputGraph)
+                    ? DependencyGraphFile.Create()
+                    : DependencyGraphFile.Create(options.OutputGraph, autoDelete: false);
+
                 var arguments = new[]
                 {
-                    context.ProjectPath,
-                    MsBuild.Property("Configuration", context.Configuration),
+                    options.ProjectPath,
+                    MsBuild.Property("Configuration", options.Configuration),
                     MsBuild.Target("Restore", "GenerateRestoreGraphFile"),
-                    MsBuild.Property("RestoreGraphOutputPath", graphFile.Path),
+                    MsBuild.Property("RestoreGraphOutputPath", graphFile.FilePath),
                 };
 
-                var parameters = _commandLineArgsFilter.GetParameters();
-                await _commandRunner.RunAsync("dotnet", "msbuild", arguments.Extend(parameters));
+                await _commandRunner.RunAsync("dotnet", "msbuild", arguments.Extend(options.Parameters));
 
-                if (context.IsDebugMode)
+                if (options.IsDebug)
                     _logger.LogDebug($"Graph file: {graphFile}");
 
                 return graphFile;
@@ -67,14 +65,14 @@ namespace PackProject.Tool.Services.GraphBuilder
                     WriteIndented = true
                 });
 
-                if (context.IsDebugMode)
+                if (options.IsDebug)
                     _logger.LogDebug($"Graph:{Environment.NewLine} {model}");
 
                 return model;
             }
 
             using var file = await GenerateAsync();
-            return await ParseAsync(file.Path);
+            return await ParseAsync(file.FilePath);
         }
     }
 }

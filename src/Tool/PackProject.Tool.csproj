@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,6 +8,7 @@
 
   <PropertyGroup>
     <PackAsTool>true</PackAsTool>
+    <IsTool>true</IsTool>
     <PackageId>btshft.pack-project</PackageId>
     <ToolCommandName>dotnet-pack-project</ToolCommandName>
     <PackageOutputPath>./.artifacts</PackageOutputPath>
@@ -15,11 +16,20 @@
     <Authors>Igor Polyakov</Authors>
     <PackageProjectUrl>https://github.com/btshft/ProjectPack</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- Declare that the Repository URL can be published to NuSpec -->
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Embed source files that are not tracked by the source control manager to the PDB -->
+
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.5" />

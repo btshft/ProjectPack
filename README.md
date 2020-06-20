@@ -1,5 +1,9 @@
 # Project Pack ![PackProject NuGet](https://img.shields.io/nuget/vpre/btshft.pack-project)
 
+> **⚠️ Preview**
+> 
+> The program is in preview stage and may not work as expected. In case of errors, feel free to create an issue.
+
 Project packer is a simple dotnet tool that allows you to package projects with 'project-to-project' dependencies. 
 Tool execution result is the original project packed in NuGet and all the project dependency graph packaged separate NuGets with the same version as the original project.
 Basically, the tool is just a wrapper over `dotnet msbuild` and `dotnet pack`.
@@ -32,3 +36,6 @@ So you need to publish packages for the entire project dependency graph with the
 There are some ways to solve 'inconvenience' like [setting PrivateAssets="all"](https://www.jacobmohl.dk/til/use-project-to-project-references-in-nuget/) or [hacking csproj](https://github.com/dotnet/sdk/issues/6688#issuecomment-333318028) which can lead to runtime exceptions.
 
 Therefore, this tool was created trying to cope with project-to-project dependencies in NuGet packages and make working with them not so terrible.
+
+# How it works
+Tool inspired by article [Analyzing .NET Core project dependencies](https://www.jerriepelser.com/blog/analyze-dotnet-project-dependencies-part-1/). Is uses the same mechanism to analyze dependencies and build a graph, through a MSBuild `GenerateRestoreGraphFile` targer after which the tool analyzes dependencies and for each of them translates the call to dotnet pack.

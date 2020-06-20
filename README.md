@@ -19,7 +19,7 @@ dotnet tool install --global btshft.pack-project --version 1.0.0-preview.1
 The program call is the same as the [dotnet pack](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-pack), except for a few extra arguments. 
 
 ```
-dotnet pack-project <project> <args>
+dotnet pack-project <project-dir> <args>
 ```
 
 ## Examples

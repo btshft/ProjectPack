@@ -34,4 +34,4 @@ jobs:
       
     - name: Push
       working-directory: src/Tool/artifacts
-      run: dotnet nuget push "btshft.pack-project.$version-ci-$GITHUB_RUN_NUMBER.nupkg" --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}

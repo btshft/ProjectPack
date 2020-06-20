@@ -9,7 +9,7 @@ Tool execution result is the original project packed in NuGet and all the projec
 Basically, the tool is just a wrapper over `dotnet msbuild` and `dotnet pack`.
 
 # Installation
-Tool can be installed from [NuGet]() as
+Tool can be installed from [NuGet](https://www.nuget.org/packages/btshft.pack-project/) as
 ```
 dotnet tool install --global btshft.pack-project --version 1.0.0-preview.1
 ```

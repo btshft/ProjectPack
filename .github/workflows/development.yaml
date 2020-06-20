@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     env:
-      version: 1.0.0-ci+${{ env.GITHUB_RUN_NUMBER }}
+      version: 1.0.0-ci
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -25,12 +25,12 @@ jobs:
       working-directory: src
       
     - name: Build
-      run: dotnet build --configuration Release --no-restore -p:Version=${{ env.version }}
+      run: dotnet build --configuration Release --no-restore -p:Version=$version-ci-$GITHUB_RUN_NUMBER
       working-directory: src
       
     - name: Pack
-      run: dotnet pack --configuration --no-build --no-restore Release --output ../artifacts -p:PackageVersion=${{ env.version }}
+      run: dotnet pack --configuration --no-build --no-restore Release --output ../artifacts -p:PackageVersion=$version-ci-$GITHUB_RUN_NUMBER
       
     - name: Push
       working-directory: artifacts
-      run: dotnet nuget push "btshft.pack-project.${version}.nupkg" --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push "btshft.pack-project.$version-ci-$GITHUB_RUN_NUMBER.nupkg" --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}

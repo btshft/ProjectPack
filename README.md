@@ -22,6 +22,13 @@ The program call is the same as the [dotnet pack](https://docs.microsoft.com/en-
 dotnet pack-project <project> <args>
 ```
 
+## Examples
+
+Following example will pack project 'MyProject' and all of dependencies to folder './arficacts' with version '1.1.0'.
+```
+dotnet pack-project ./src/MyProject --output ./artifacts -p:Version=1.1.0
+```
+
 ## Extra arguments
 * `--parallel` - Enables parallel package creation.
 * `--debug` - Enables display of tool execution flow.

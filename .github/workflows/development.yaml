@@ -12,6 +12,9 @@ jobs:
       version: 1.0.0-ci
     runs-on: ubuntu-latest
     steps:
+    - name: Register GitHub source
+      run: dotnet nuget add source https://nuget.pkg.github.com/btshft/index.json --name github --username btshft --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text 
+          
     - uses: actions/checkout@v2
       name: Checkout
     
@@ -34,4 +37,4 @@ jobs:
       
     - name: Push
       working-directory: src/Tool/artifacts
-      run: dotnet nuget push *.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push *.nupkg --source "github"

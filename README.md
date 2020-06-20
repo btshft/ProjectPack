@@ -34,7 +34,7 @@ dotnet pack-project ./src/MyProject --output ./artifacts -p:Version=1.1.0
 * `--debug` - Enables display of tool execution flow.
 
 # Why
-There are [some inconvenience](https://github.com/dotnet/sdk/issues/6688) with the way `dotnet pack` works with project-to-project references. 
+There are [some inconvenience](https://github.com/dotnet/sdk/issues/6688) that are still [not resolved](https://github.com/NuGet/Home/issues/3891) with the way `dotnet pack` works with project-to-project references. 
 
 If you simply call `dotnet pack` on a project with such dependencies, 
 it will create single project package with 'ProjectReference' replaced by 'PackageReference' with the provided version. 

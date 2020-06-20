@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Start (Tool)": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Projects\\Zeus\\src\\Zeus\\Zeus.csproj --configuration Debug --include-source --output ../../test --debug /p:Version=123"
+    }
+  }
+}

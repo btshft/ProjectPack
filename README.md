@@ -11,12 +11,12 @@ Basically, the tool is just a wrapper over `dotnet msbuild` and `dotnet pack`.
 # Installation
 Tool can be installed from [NuGet](https://www.nuget.org/packages/btshft.pack-project/) as
 ```
-dotnet tool install --global btshft.pack-project --version 1.0.0-preview.2
+dotnet tool install --global btshft.pack-project --version 1.0.0-preview.3
 ```
 
 # Usage
 
-The program call is the same as the [dotnet pack](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-pack), except for a few extra arguments. 
+The program call is the same as the [dotnet pack](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-pack), except for a few extra cases descibed below. 
 
 ```
 dotnet pack-project <project-dir> <args>
@@ -31,8 +31,10 @@ dotnet pack-project ./src/MyProject --output ./artifacts -p:Version=1.1.0
 
 ## Extra arguments
 * `--parallel` - Enables parallel package creation.
-* `--debug` - Provides additional program execuion output.
 * `--output-graph` - Generates project dependency graph in path specified.
+
+## Unsupported arguments
+* `--no-dependencies` - it's mutual exclusive with tool purpose.
 
 # Why
 There are [some inconvenience](https://github.com/dotnet/sdk/issues/6688) that are still [not resolved](https://github.com/NuGet/Home/issues/3891) with the way `dotnet pack` works with project-to-project references. 

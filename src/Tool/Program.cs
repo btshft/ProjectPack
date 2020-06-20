@@ -70,8 +70,13 @@ namespace PackProject.Tool
             }
             catch (InvalidInputException ie)
             {
+                await Console.Error.WriteLineAsync("Execution terminated because of invalid input");
+
                 if (ie.Reason != null)
+                {
+                    await Console.Error.WriteLineAsync("Reason:");
                     await Console.Error.WriteLineAsync(ie.Reason);
+                }
 
                 return ie.ExitCode;
             }

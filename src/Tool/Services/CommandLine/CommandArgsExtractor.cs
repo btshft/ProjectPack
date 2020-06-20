@@ -92,8 +92,8 @@ namespace PackProject.Tool.Services.CommandLine
                 return nextToken;
             }
 
-            // Probably only for debug mode
-            return _args[0];
+            return OptionRegex.IsMatch(_args[0])
+                ? null : _args[0];
         }
 
         /// <inheritdoc />

@@ -29,9 +29,9 @@ jobs:
       working-directory: src
       
     - name: Pack
-      run: ls -a && dotnet pack  PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=$version.$GITHUB_RUN_NUMBER
+      run: dotnet pack  PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=$version.$GITHUB_RUN_NUMBER
       working-directory: src/Tool
       
     - name: Push
       working-directory: src/Tool/artifacts
-      run: find . | dotnet nuget push --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push *.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}

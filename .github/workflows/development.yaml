@@ -1,0 +1,40 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    env:
+      version: 1.0.0-ci
+    runs-on: ubuntu-latest
+    steps:
+    - name: Register GitHub source
+      run: dotnet nuget add source https://nuget.pkg.github.com/btshft/index.json --name github
+          
+    - uses: actions/checkout@v2
+      name: Checkout
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: src
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore -p:Version=$version.$GITHUB_RUN_NUMBER
+      working-directory: src
+      
+    - name: Pack
+      run: dotnet pack  PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=$version.$GITHUB_RUN_NUMBER
+      working-directory: src/Tool
+      
+    - name: Push
+      working-directory: src/Tool/artifacts
+      run: dotnet nuget push *.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}

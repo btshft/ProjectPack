@@ -17,7 +17,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          return context.payload.ref.replace(/\/refs\/tags\/v/, '');
+          return context.payload.ref.replace(/(?:\/)*refs\/tags\/v/, '', '');
             
     - uses: actions/checkout@v2
       name: Checkout

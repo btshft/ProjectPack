@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     env:
-      version: 1.0.0-ci
+      version: 1.0.0-preview
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -25,11 +25,11 @@ jobs:
       working-directory: src
       
     - name: Build
-      run: dotnet build --configuration Release --no-restore -p:Version=$version-ci-$GITHUB_RUN_NUMBER
+      run: dotnet build --configuration Release --no-restore -p:Version=$version+$GITHUB_RUN_NUMBER
       working-directory: src
       
     - name: Pack
-      run: ls -a && dotnet pack  PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=$version-ci-$GITHUB_RUN_NUMBER
+      run: ls -a && dotnet pack  PackProject.Tool.csproj --configuration Release --no-build --no-restore --output ./artifacts -p:PackageVersion=$version+$GITHUB_RUN_NUMBER
       working-directory: src/Tool
       
     - name: Push

@@ -41,4 +41,4 @@ jobs:
       
     - name: Push
       working-directory: src/Tool/artifacts
-      run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_APIKEY }}
+      run: dotnet nuget push *.nupkg --api-key ${{ secrets.NUGET_APIKEY }} -s https://api.nuget.org/v3/index.json

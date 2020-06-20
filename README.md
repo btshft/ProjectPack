@@ -2,7 +2,7 @@
 
 > **⚠️ Preview**
 > 
-> The program is in preview stage and may not work as expected. In case of errors, feel free to create an issue.
+> Tool is in preview stage and may not work as expected. In case of errors, feel free to create an issue.
 
 Project packer is a simple dotnet tool that allows you to package projects with 'project-to-project' dependencies. 
 Tool execution result is the original project packed in NuGet and all the project dependency graph packaged separate NuGets with the same version as the original project.

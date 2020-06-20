@@ -1,4 +1,4 @@
-# Project Pack ![PackProject NuGet](https://img.shields.io/nuget/vpre/btshft.pack-project)
+# Project Pack [![PackProject NuGet](https://img.shields.io/nuget/vpre/btshft.pack-project)](https://www.nuget.org/packages/btshft.pack-project/)
 
 > **⚠️ Preview**
 > 

@@ -30,6 +30,7 @@ jobs:
       
     - name: Pack
       run: dotnet pack --configuration --no-build --no-restore Release --output ../artifacts -p:PackageVersion=$version-ci-$GITHUB_RUN_NUMBER
+      working-directory: src
       
     - name: Push
       working-directory: artifacts

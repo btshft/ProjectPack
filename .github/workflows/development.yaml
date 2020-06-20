@@ -8,14 +8,29 @@ on:
 
 jobs:
   build:
+    env:
+      version: 1.0.0-ci+${{ env.GITHUB_RUN_NUMBER }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      name: Checkout
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    
     - name: Install dependencies
       run: dotnet restore
+      working-directory: src
+      
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ env.version }}
+      working-directory: src
+      
+    - name: Pack
+      run: dotnet pack --configuration --no-build --no-restore Release --output ../artifacts -p:PackageVersion=${{ env.version }}
+      
+    - name: Push
+      working-directory: artifacts
+      run: dotnet nuget push "btshft.pack-project.${version}.nupkg" --source "github" --api-key ${{ secrets.GITHUB_TOKEN }}

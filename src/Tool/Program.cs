@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PackProject.Tool.Exceptions;
+using PackProject.Tool.Extensions;
 using PackProject.Tool.Services.CommandLine;
 using PackProject.Tool.Services.DotNetPack;
 using PackProject.Tool.Services.ExecutionContext;
@@ -15,6 +16,8 @@ using PackProject.Tool.Services.GraphAnalyzer;
 using PackProject.Tool.Services.GraphBuilder;
 using PackProject.Tool.Services.GraphProcessor;
 using PackProject.Tool.Services.Runner;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 namespace PackProject.Tool
 {
@@ -25,42 +28,24 @@ namespace PackProject.Tool
             var serviceCollection = new ServiceCollection()
                 .AddSingleton<IDependencyGraphAnalyzer, DependencyGraphAnalyzer>()
                 .AddSingleton<IDependencyGraphBuilder, DependencyGraphBuilder>()
-                .AddSingleton<IDependencyGraphProcessor, DependencyGraphProcessor>()
+                .AddSingleton<IDependencyGraphProcessor, PackageDowngradeScanner>()
+                .AddSingleton<IDependencyGraphProcessor, PackageCreator>()
                 .AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>()
                 .AddSingleton<ICommandRunner, CommandRunner>()
                 .AddSingleton<IDotNetPack, DotNetPack>()
                 .AddSingleton<ICommandArgsExtractor>(new CommandArgsExtractor(args))
                 .AddSingleton<Executor>();
 
-            serviceCollection.AddSingleton(sp =>
+            serviceCollection.AddSingleton<ILoggerFactory>(sp =>
             {
                 var extractor = sp.GetRequiredService<ICommandArgsExtractor>();
 
-                return LoggerFactory.Create(cfg =>
-                {
-                    var verbosity = extractor.GetVerbosity();
-                    if (verbosity != null)
-                    {
-                        var logLevel = verbosity.ToLowerInvariant() switch
-                        {
-                            "q" => LogLevel.Error,
-                            "quiet" => LogLevel.Error,
-                            "m" => LogLevel.Warning,
-                            "minimal" => LogLevel.Warning,
-                            "n" => LogLevel.Information,
-                            "normal" => LogLevel.Information,
-                            "d" => LogLevel.Debug,
-                            "detailed" => LogLevel.Debug,
-                            "diag" => LogLevel.Debug,
-                            "diagnostic" => LogLevel.Debug,
-                            _ => LogLevel.Error
-                        };
+                var level = SerilogHelper.GetLevel(extractor.GetVerbosity());
+                var logger = new LoggerConfiguration()
+                    .WriteTo.Console(level, outputTemplate: "{NewLine}[{Level}] <{SourceContext:l}> {NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+                    .CreateLogger();
 
-                        cfg.SetMinimumLevel(logLevel);
-                    }
-
-                    cfg.AddConsole();
-                });
+                return new SerilogLoggerFactory(logger, dispose: true);
             });
 
             serviceCollection.AddTransient(typeof(ILogger<>), typeof(Logger<>));

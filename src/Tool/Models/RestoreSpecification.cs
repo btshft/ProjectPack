@@ -18,6 +18,8 @@ namespace PackProject.Tool.Models
 
         public List<string> OriginalTargetFrameworks { get; set; } = new List<string>();
 
+        public Dictionary<string, None> Sources { get; set; } = new Dictionary<string, None>();
+
         public Dictionary<string, FrameworkSpecification> Frameworks { get; set; } 
             = new Dictionary<string, FrameworkSpecification>();
     }

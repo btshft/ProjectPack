@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using PackProject.Tool.Exceptions;
 using PackProject.Tool.Options;
 using PackProject.Tool.Services.CommandLine;
@@ -15,20 +17,23 @@ namespace PackProject.Tool
         private readonly IExecutionContextAccessor _contextAccessor;
         private readonly IDependencyGraphBuilder _graphBuilder;
         private readonly IDependencyGraphAnalyzer _graphAnalyzer;
-        private readonly IDependencyGraphProcessor _processor;
+        private readonly IEnumerable<IDependencyGraphProcessor> _processors;
+        private readonly ILogger<Executor> _logger;
 
         public Executor(
             ICommandArgsExtractor argsExtractor,
             IExecutionContextAccessor contextAccessor,
             IDependencyGraphBuilder graphBuilder,
             IDependencyGraphAnalyzer graphAnalyzer,
-            IDependencyGraphProcessor processor)
+            IEnumerable<IDependencyGraphProcessor> processors, 
+            ILogger<Executor> logger)
         {
             _argsExtractor = argsExtractor;
             _contextAccessor = contextAccessor;
             _graphBuilder = graphBuilder;
             _graphAnalyzer = graphAnalyzer;
-            _processor = processor;
+            _processors = processors;
+            _logger = logger;
         }
 
         public async Task<int> ExecuteAsync(
@@ -45,7 +50,9 @@ namespace PackProject.Tool
             string verbosity = null,
             string versionSuffix = null,
             bool parallel = false,
-            string outputGraph = null)
+            string outputGraph = null,
+            bool warnDowngrade = false,
+            bool disallowDowngrade = false)
         {
             void InitContext()
             {
@@ -76,7 +83,9 @@ namespace PackProject.Tool
 
                     // dotnet pack-project
                     Parallel = parallel,
-                    OutputGraph = outputGraph
+                    OutputGraph = outputGraph,
+                    WarnDowngrade = warnDowngrade,
+                    DisallowDowngrade = disallowDowngrade
                 };
 
                 _contextAccessor.Context = new ExecutionContext
@@ -89,7 +98,12 @@ namespace PackProject.Tool
 
             var dependencyGraph = await _graphBuilder.BuildAsync();
             var result = _graphAnalyzer.Analyze(dependencyGraph);
-            await _processor.ProcessAsync(result, dependencyGraph);
+
+            foreach (var processor in _processors)
+            {
+                _logger.LogInformation("Executing {Processor}", processor.GetType().Name);
+                await processor.ProcessAsync(result, dependencyGraph);
+            }
 
             return 0;
         }

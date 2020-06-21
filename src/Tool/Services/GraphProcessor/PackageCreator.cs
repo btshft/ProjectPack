@@ -7,12 +7,12 @@ using PackProject.Tool.Services.GraphAnalyzer;
 
 namespace PackProject.Tool.Services.GraphProcessor
 {
-    public class DependencyGraphProcessor : IDependencyGraphProcessor
+    public class PackageCreator : IDependencyGraphProcessor
     {
         private readonly IExecutionContextAccessor _contextAccessor;
         private readonly IDotNetPack _dotNetPack;
 
-        public DependencyGraphProcessor(
+        public PackageCreator(
             IExecutionContextAccessor contextAccessor, IDotNetPack dotNetPack)
         {
             _contextAccessor = contextAccessor;
@@ -27,7 +27,7 @@ namespace PackProject.Tool.Services.GraphProcessor
             if (options.Parallel)
             {
                 var runTasks = analysis.Projects.Select(
-                    project => _dotNetPack.PackAsync(project, options));
+                    project => _dotNetPack.PackAsync(project.Path, options));
 
                 await Task.WhenAll(runTasks);
             }
@@ -35,7 +35,7 @@ namespace PackProject.Tool.Services.GraphProcessor
             {
                 foreach (var project in analysis.Projects)
                 {
-                    await _dotNetPack.PackAsync(project, options);
+                    await _dotNetPack.PackAsync(project.Path, options);
                 }
             }
         }

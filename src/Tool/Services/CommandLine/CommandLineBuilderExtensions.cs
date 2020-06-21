@@ -75,6 +75,14 @@ namespace PackProject.Tool.Services.CommandLine
                 "Set filename for generating project dependency graph.",
                 "--output-graph");
 
+            builder.AddOption<bool>(
+                "Warns when possible package downgrade detected.",
+                "--warn-downgrade");
+
+            builder.AddOption<bool>(
+                "Stops tool execution is package downgrade detected.",
+                "--disallow-downgrade");
+
             return builder;
         }
 

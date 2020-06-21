@@ -6,12 +6,14 @@
 
 Project packer is a simple dotnet tool that allows you to package projects with 'project-to-project' dependencies. 
 Tool execution result is the original project packed in NuGet and all the project dependency graph packaged separate NuGets with the same version as the original project.
-Basically, the tool is just a wrapper over `dotnet msbuild` and `dotnet pack`.
+Basically, the tool is just a wrapper over `dotnet msbuild` and `dotnet pack`. 
+
+Also Project Pack supports package downgrade check - it scans remote NuGet sources for bundled packages and compares remote versions to locals. If remote contains higher versions, the tool will fail or warn about downgrade depending on provided options. Downgrade scan is disabled by default.
 
 # Installation
 Tool can be installed from [NuGet](https://www.nuget.org/packages/btshft.pack-project/) as
 ```
-dotnet tool install --global btshft.pack-project --version 1.0.0-preview.3
+dotnet tool install --global btshft.pack-project --version 1.0.0-preview.4
 ```
 
 # Usage
@@ -32,6 +34,8 @@ dotnet pack-project ./src/MyProject --output ./artifacts -p:Version=1.1.0
 ## Extra arguments
 * `--parallel` - Enables parallel package creation.
 * `--output-graph` - Generates project dependency graph in path specified.
+* `--warn-downgrade` - Warns if package downgrade detected for any of bundling packages.
+* `--disallow-downgrade` - Terminates execution with non-zero code if package downgrade detected.
 
 ## Unsupported arguments
 * `--no-dependencies` - it's mutual exclusive with tool purpose.

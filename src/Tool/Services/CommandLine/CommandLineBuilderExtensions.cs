@@ -76,11 +76,11 @@ namespace PackProject.Tool.Services.CommandLine
                 "--output-graph");
 
             builder.AddOption<bool>(
-                "Warns when possible package downgrade detected.",
+                "Warn when possible package downgrade detected.",
                 "--warn-downgrade");
 
             builder.AddOption<bool>(
-                "Stops tool execution is package downgrade detected.",
+                "Terminate tool execution when package downgrade detected.",
                 "--disallow-downgrade");
 
             return builder;
